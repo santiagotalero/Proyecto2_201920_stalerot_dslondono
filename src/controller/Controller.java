@@ -41,69 +41,52 @@ public class Controller {
 			int option = lector.nextInt();
 			switch(option){
 				case 1:
+					
+					//CARGA ARCHIVOS
+					
 					try {
 						modelo.cargarArchivos();
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					
+
 					break;
 
 				case 2:
 					
-					System.out.println("Ingrese un trimestre.");
-					int trimestre=lector.nextInt();
-					
-					System.out.println("Ingrese una zona de origen");
-					int zO= lector.nextInt();
-					System.out.println("Ingrese una zona de destino");
-					int zD= lector.nextInt();
-					
-					Queue viajes= modelo.req1(trimestre, zO, zD);
+					//REQ1A
 
-					if(viajes!=null){
-
-
-						Iterator iter= viajes.iterator();
-
-						while(iter.hasNext())
-						{
-							TravelTime actual= (TravelTime) iter.next();
-							System.out.println("\n"+actual.getTrimestre()+","+actual.getSourceID()+","+actual.getDstID()+","+ actual.getDow()+","+actual.getMeanTravelTime()+"\n");
-						}
-					}
 					break;
 				case 3:
-					System.out.println("Ingrese un trimestre.");
-					trimestre=lector.nextInt();
-					
-					System.out.println("Ingrese una zona de origen");
-					zO= lector.nextInt();
-					System.out.println("Ingrese una zona de destino");
-					zD= lector.nextInt();
-					
-					viajes= modelo.req2(trimestre, zO, zD);
-					
-					if(viajes!=null){
-						
-					
-					Iterator iter= viajes.iterator();
-					
-					while(iter.hasNext())
-					{
-						TravelTime actual= (TravelTime) iter.next();
-						System.out.println("\n"+ actual.getTrimestre()+","+actual.getSourceID()+","+actual.getDstID()+","+ actual.getDow()+","+actual.getMeanTravelTime()+"\n");
-					}
-					}
+					//REQ2A
 					break;
 				case 4: 
-					long[] tiempos= modelo.req3();
-					
-					System.out.println("Linear prob:" + tiempos[0]+ ", separate chaining: "+ tiempos[1]);
-					
+					//REQ3A
 					break;
 				case 5: 
+					//REQ1B
+					break;
+				case 6: 
+					//REQ2B
+					break;
+				case 7: 
+					//REQ3B
+					break;
+				case 8: 
+					//REQ1C
+					break;
+				case 9: 
+					//REQ2C
+					break;
+				case 10: 
+					//REQ3C
+					break;
+				case 11: 
+					//REQ4C
+					break;
+
+				case 12: 
 					System.out.println("--------- \n Hasta pronto !! \n---------"); 
 					lector.close();
 					fin = true;
