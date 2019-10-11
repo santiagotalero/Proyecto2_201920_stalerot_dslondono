@@ -5,12 +5,17 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.Iterator;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
 import com.opencsv.CSVReader;
 
 
 import model.data_structures.HashTableLinearProbing;
 import model.data_structures.MaxHeapCP;
 import model.data_structures.Queue;
+import model.data_structures.RedBlackBST;
+import model.logic.ClasesArchivoJSon.Feature;
+import model.logic.ClasesArchivoJSon.FeatureCollection;
 
 
 /**
@@ -23,7 +28,7 @@ public class MVCModelo {
 	 */
 	private HashTableLinearProbing tablaHash;
 	private MaxHeapCP heap;
-	//private PUTOARBOL arbol;
+	private RedBlackBST arbol;
 	
 
 	
@@ -32,7 +37,9 @@ public class MVCModelo {
 	 */
 	public MVCModelo()
 	{
-		
+		tablaHash= new HashTableLinearProbing();
+		heap= new MaxHeapCP();
+		arbol= new RedBlackBST();
 	}
 	
 	
@@ -52,7 +59,33 @@ public class MVCModelo {
 		
 		
 		//ARCHIVO JSON
+		String path= "./data/bogota_cadastral.json";
 		
+		Gson gson = new Gson();
+		
+		JsonReader reader;
+		
+		FeatureCollection a=null;
+		try{
+			reader= new JsonReader(new FileReader(path));
+			a= gson.fromJson(reader, FeatureCollection.class);
+			
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+
+		
+		int i=0;
+		
+		while(i<a.getFeatures().length)
+		{
+			Feature actual= a.getFeatures()[i];
+			
+			tablaHash.put(actual.getPropiedades().getMOVEMENT_ID(), actual);
+			i++;
+		}
 		
 		
 	}
