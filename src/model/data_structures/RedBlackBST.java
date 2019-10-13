@@ -595,31 +595,31 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IOrdered
 			return size(node.left); 
 	} 
 
-//	/**
-//	 * @return A Iterable Queue with the keys. 
-//	 */
-//	public Iterable<Key> keys() 
-//	{
-//		if(isEmpty()) 
-//			return new AuxiliarQueue<Key>();
-//		return keysInRange(min(), max());
-//	}
+	/**
+	 * @return A Iterable Queue with the keys. 
+	 */
+	public Iterable<Key> keys() 
+	{
+		if(isEmpty()) 
+			return new Queue<Key>();
+		return keysInRange(min(), max());
+	}
 
-//	/**
-//	 * @param lo Lowest key.
-//	 * @param hi Highest key.
-//	 * @return A Iterable Queue with the keys that fit the ranged parameter.
-//	 */
-//	public Iterable<Key> keysInRange(Key lo, Key hi) 
-//	{
-//		if(lo == null) 
-//			throw new IllegalArgumentException("first argument to keys() is null");
-//		if(hi == null) 
-//			throw new IllegalArgumentException("second argument to keys() is null");
-//		AuxiliarQueue<Key> queue = new AuxiliarQueue<Key>();
-//		keys(root, queue, lo, hi);
-//		return queue;
-//	}
+	/**
+	 * @param lo Lowest key.
+	 * @param hi Highest key.
+	 * @return A Iterable Queue with the keys that fit the ranged parameter.
+	 */
+	public Iterable<Key> keysInRange(Key lo, Key hi) 
+	{
+		if(lo == null) 
+			throw new IllegalArgumentException("first argument to keys() is null");
+		if(hi == null) 
+			throw new IllegalArgumentException("second argument to keys() is null");
+		Queue<Key> queue = new Queue<Key>();
+		keys(root, queue, lo, hi);
+		return queue;
+	}
 
 	/**
 	 * @param node Node to check if contains the lowest key.
@@ -627,34 +627,34 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IOrdered
 	 * @param lo The lowest key.
 	 * @param hi The highest key.
 	 */
-//	private void keys(Node node, AuxiliarQueue<Key> queue, Key lo, Key hi) 
-//	{ 
-//		if(node == null) 
-//			return; 
-//		int cmplo = lo.compareTo(node.key); 
-//		int cmphi = hi.compareTo(node.key); 
-//		if(cmplo < 0) 
-//			keys(node.left, queue, lo, hi); 
-//		if(cmplo <= 0 && cmphi >= 0) 
-//			queue.enqueue(node.key); 
-//		if(cmphi > 0)
-//			keys(node.right, queue, lo, hi); 
-//	}
+	private void keys(Node node, Queue<Key> queue, Key lo, Key hi) 
+	{ 
+		if(node == null) 
+			return; 
+		int cmplo = lo.compareTo(node.key); 
+		int cmphi = hi.compareTo(node.key); 
+		if(cmplo < 0) 
+			keys(node.left, queue, lo, hi); 
+		if(cmplo <= 0 && cmphi >= 0) 
+			queue.enqueue(node.key); 
+		if(cmphi > 0)
+			keys(node.right, queue, lo, hi); 
+	}
 	/**
 	 * @param lo Lowest key.
 	 * @param hi Highest key.
 	 * @return A Iterable Queue with the values that fit the ranged parameter.
 	 */
-//	public Iterable<Value> valuesInRange(Key lo, Key hi) 
-//	{
-//		if(lo == null) 
-//			throw new IllegalArgumentException("first argument to keys() is null");
-//		if(hi == null) 
-//			throw new IllegalArgumentException("second argument to keys() is null");
-//		AuxiliarQueue<Value> queue = new AuxiliarQueue<Value>();
-//		values(root, queue, lo, hi);
-//		return queue;
-//	}
+	public Iterable<Value> valuesInRange(Key lo, Key hi) 
+	{
+		if(lo == null) 
+			throw new IllegalArgumentException("first argument to keys() is null");
+		if(hi == null) 
+			throw new IllegalArgumentException("second argument to keys() is null");
+		Queue<Value> queue = new Queue<Value>();
+		values(root, queue, lo, hi);
+		return queue;
+	}
 
 	/**
 	 * @param node Node to check if contains the lowest key.
@@ -662,19 +662,19 @@ public class RedBlackBST<Key extends Comparable<Key>, Value> implements IOrdered
 	 * @param lo The lowest key.
 	 * @param hi The highest key.
 	 */
-//	private void values(Node node, AuxiliarQueue<Value> queue, Key lo, Key hi) 
-//	{ 
-//		if(node == null) 
-//			return; 
-//		int cmplo = lo.compareTo(node.key); 
-//		int cmphi = hi.compareTo(node.key); 
-//		if(cmplo < 0) 
-//			values(node.left, queue, lo, hi); 
-//		if(cmplo <= 0 && cmphi >= 0) 
-//			queue.enqueue(node.value); 
-//		if(cmphi > 0)
-//			values(node.right, queue, lo, hi); 
-//	}
+	private void values(Node node, Queue<Value> queue, Key lo, Key hi) 
+	{ 
+		if(node == null) 
+			return; 
+		int cmplo = lo.compareTo(node.key); 
+		int cmphi = hi.compareTo(node.key); 
+		if(cmplo < 0) 
+			values(node.left, queue, lo, hi); 
+		if(cmplo <= 0 && cmphi >= 0) 
+			queue.enqueue(node.value); 
+		if(cmphi > 0)
+			values(node.right, queue, lo, hi); 
+	}
 
 	/**
 	 * @param lo Lowest key.

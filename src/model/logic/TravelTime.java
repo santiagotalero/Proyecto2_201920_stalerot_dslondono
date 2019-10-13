@@ -9,7 +9,7 @@ public class TravelTime implements Comparable<TravelTime>
 	
 	private int dstID;
 	
-	private int dow;
+	private int identificador;
 	
 	private double meanTravelTime;
 	
@@ -22,7 +22,7 @@ public class TravelTime implements Comparable<TravelTime>
 		this.trimestre=trimestre;
 		this.sourceID = sourceID;
 		this.dstID = dstID;
-		this.dow = hod;
+		this.identificador = hod;
 		this.meanTravelTime = meanTravelTime;
 		this.standardDeviationTravelTime = standardDeviationTravelTime;
 
@@ -40,8 +40,8 @@ public class TravelTime implements Comparable<TravelTime>
 		return dstID;
 	}
 
-	public int getDow() {
-		return dow;
+	public int getIdentificador() {
+		return identificador;
 	}
 
 	public double getMeanTravelTime() {

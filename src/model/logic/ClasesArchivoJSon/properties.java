@@ -6,12 +6,12 @@ public class properties
 	private String scacodigo;
 	private int scatipo;
 	private String scanombre;
-	private long shape_leng;
-	private long shape_area;
+	private double shape_leng;
+	private double shape_area;
 	private String MOVEMENT_ID;
 	private String DISPLAY_NAME;
-	public properties(int cartodb_id, String scacodigo, int scatipo, String scanombre, long shape_leng, long shape_area,
-			String mOVEMENT_ID, String dISPLAY_NAME) {
+	public properties(int cartodb_id, String scacodigo, int scatipo, String scanombre, double shape_leng,
+			double shape_area, String mOVEMENT_ID, String dISPLAY_NAME) {
 		super();
 		this.cartodb_id = cartodb_id;
 		this.scacodigo = scacodigo;
@@ -46,16 +46,16 @@ public class properties
 	public void setScanombre(String scanombre) {
 		this.scanombre = scanombre;
 	}
-	public long getShape_leng() {
+	public double getShape_leng() {
 		return shape_leng;
 	}
-	public void setShape_leng(long shape_leng) {
+	public void setShape_leng(double shape_leng) {
 		this.shape_leng = shape_leng;
 	}
-	public long getShape_area() {
+	public double getShape_area() {
 		return shape_area;
 	}
-	public void setShape_area(long shape_area) {
+	public void setShape_area(double shape_area) {
 		this.shape_area = shape_area;
 	}
 	public String getMOVEMENT_ID() {
@@ -70,4 +70,7 @@ public class properties
 	public void setDISPLAY_NAME(String dISPLAY_NAME) {
 		DISPLAY_NAME = dISPLAY_NAME;
 	}
+	
+	
+	
 }
