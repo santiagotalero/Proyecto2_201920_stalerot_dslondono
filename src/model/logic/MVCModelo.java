@@ -223,54 +223,66 @@ public class MVCModelo {
 	}
 	
 	
-	public void req1A()
+	public HashTableLinearProbing req1A(int n)
 	{
-		
+		//Retornaremos una tabla de hash con las zonas que empiezan por las N letras más frecuentes
+		return null;
 	}
 	
-	public void req2A()
+	public RedBlackBST req2A(double latitud, double longitud)
 	{
-		
+		//Retornaremos un arbol balanceado con los nodos que se encuentran entre las coordenadas dadas por parámetro
+		return null;
 	}
 	
-	public void req3A()
+	public MaxHeapCP req3A(double tiempoMenor, double tiempoMayor , int n)
 	{
-		
+		//Retornaremos un heap con los N viajes, los cuales su meanTravelTime se encuentre entre el rango de tiempos dados
+		return null;
 	}
 	
-	public void req1B()
+	public HashTableLinearProbing req1B(int N)
 	{
-		
+		//Retornaremos una tabla de hash con las N zonas más al norte
+		return null;
 	}
 	
-	public void req2B()
+	public RedBlackBST req2B(double latitud, double longitud)
 	{
-		
+		//Retornaremos un arbol balanceado con los nodos que se encuentran entre las coordenadas dadas por parámetro
+		return null;
 	}
 	
-	public void req3B()
+	public MaxHeapCP req3B()
 	{
-		
+		//Retornaremos un heap con los N viajes, los cuales su desviación estándar se encuentre entre el rango de tiempos dados
+		return null;
 	}
 	
-	public void req1C()
+	public MaxHeapCP req1C(int idZonaSalida, int hora )
 	{
-		
+		//Retornaremos un heap con las viajes que cumplen las características dadas por parámetro
+		return null;
 	}
 	
-	public void req2C()
+	public MaxHeapCP req2C(int idZonaLlegada, int horaMenor, int horaMayor)
 	{
-		
+		//Retornaremos una heap con los viajes que cumplan esa característica y se encuentren entre ese rango de zonas
+		return null;
 	}
 	
-	public void req3C()
+	public HashTableLinearProbing req3C(int n)
 	{
-		
+		//Retornaremos una tabla de hash con las n zonas con mayor cantidad de nodos que definen su frontera
+		return null;
 	}
 	
-	public void req4C()
+	public int[] req4C()
 	{
+		//Retornarenmos un arreglo del tamaño de zonas existentes con la cantidadDeDatosFaltantes de cada zona en orden ascendente
+		int[] cantidadDeDatosFaltantes= new int [tablaHashZonas.size()];
 		
+		return cantidadDeDatosFaltantes;
 	}
 	
 	
