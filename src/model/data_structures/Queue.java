@@ -5,7 +5,6 @@ import java.util.NoSuchElementException;
 
 /**
  * Clase que representa una cola de elementos T.
- * @author Daniel del Castillo A.
  * @param <T> Tipo del cual ser� la cola.
  */
 public class Queue <T> implements Iterable<T>
