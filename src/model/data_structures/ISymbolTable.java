@@ -4,7 +4,6 @@ import java.util.Iterator;
 
 /**
  * Clase que representa el API de las tablas de símbolos.
- * @author Daniel del Castillo A.
  * @param <Key> Llave con la que se identificarán y buscarán las tuplas de la tabla.
  * @param <Value> Valor a almacenar con la correspondiente llave en la tabla. 
  */
