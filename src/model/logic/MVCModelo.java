@@ -30,6 +30,7 @@ public class MVCModelo {
 	private MaxHeapCP<TravelTime> heapHoras;
 	private MaxHeapCP<TravelTime> heapMes;
 	private RedBlackBST<Integer,NodoMV> arbolNodosMV;
+	private TravelTime[] arregloHeapHoras;
 	
 
 	
@@ -271,7 +272,7 @@ public class MVCModelo {
 		return tabla;
 	}
 	
-	public Queue zonasEmpiezanPorLetra(char c)
+	private Queue zonasEmpiezanPorLetra(char c)
 	{
 		Queue zonas= new Queue();
 		
@@ -296,7 +297,7 @@ public class MVCModelo {
 		return zonas;
 	}
 	
-	public Object[] letraMasAparece (String texto)
+	private Object[] letraMasAparece (String texto)
 	{
 		Object [] arreglo= new Object[2];
 		
@@ -396,12 +397,13 @@ public class MVCModelo {
 	public MaxHeapCP req3A(double tiempoMenor, double tiempoMayor , int n)
 	{
 		//Retornaremos un heap con los N viajes, los cuales su meanTravelTime se encuentre entre el rango de tiempos dados
-		MaxHeapCP<TravelTime> copia= heapMes;
 		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		while(!copia.isEmpty()&& (n)>0)
+		while(!heapMes.isEmpty()&& (n)>0)
 		{
-			TravelTime actual=(TravelTime) copia.delMax();
+			TravelTime actual=(TravelTime) heapMes.delMax();
+			copia.insert(actual);
 			double tiempo= actual.getMeanTravelTime();
 			
 			if(tiempo>tiempoMenor && tiempo<tiempoMayor)
@@ -410,6 +412,7 @@ public class MVCModelo {
 				n--;
 			}
 		}
+		heapMes=copia;
 		return heap;
 		
 	}
@@ -435,12 +438,14 @@ public class MVCModelo {
 	public MaxHeapCP req1C(int idZonaSalida, int hora )
 	{
 		//Retornaremos un heap con las viajes que cumplen las características dadas por parámetro
-		MaxHeapCP<TravelTime> copia= heapHoras;
+
 		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		while(!copia.isEmpty())
+		while(!heapHoras.isEmpty())
 		{
-			TravelTime actual=(TravelTime) copia.delMax();
+			TravelTime actual=(TravelTime) heapHoras.delMax();
+			copia.insert(actual);
 			int salida=actual.getSourceID();
 			int h=actual.getIdentificador();
 			
@@ -449,26 +454,33 @@ public class MVCModelo {
 				heap.insert(actual);
 			}
 		}
+		
+		heapHoras=copia;
+		
 		return heap;
 	}
 	
 	public MaxHeapCP req2C(int idZonaLlegada, int horaMenor, int horaMayor)
 	{
 		//Retornaremos una heap con los viajes que cumplan esa característica y se encuentren entre ese rango de zonas
-		MaxHeapCP<TravelTime> copia= heapHoras;
+
 		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		while(!copia.isEmpty())
+		System.out.println(heapHoras.size());
+		while(!heapHoras.isEmpty())
 		{
-			TravelTime actual=(TravelTime) copia.delMax();
+			TravelTime actual=(TravelTime) heapHoras.delMax();
+			copia.insert(actual);
 			int llegada=actual.getDstID();
 			int h=actual.getIdentificador();
 			
-			if(llegada==idZonaLlegada && h>horaMenor&&h<horaMayor)
+			if(llegada==idZonaLlegada && h>=horaMenor && h<=horaMayor)
 			{
 				heap.insert(actual);
 			}
 		}
+		heapHoras=copia;
 		return heap;
 	}
 	
@@ -476,15 +488,16 @@ public class MVCModelo {
 	{
 		//Retornaremos una tabla de hash con las n zonas con mayor cantidad de nodos que definen su frontera
 		HashTableLinearProbing<String,Integer> datos= new HashTableLinearProbing<String,Integer>();
-		HashTableLinearProbing<String,Feature> copia= tablaHashZonas;
+		HashTableLinearProbing<String,Feature> copia= new HashTableLinearProbing<String,Feature>();;
 		
 		while(n>0)
 		{
-			Queue q=(Queue) copia.keys();
+			Queue q=(Queue) tablaHashZonas.keys();
 			Iterator iter=q.iterator();
 			
 			String nombre="No encontro";
 			int nodosMax=0;
+			Feature zonaMax=null;
 			String keyMax="";
 			
 			
@@ -492,7 +505,7 @@ public class MVCModelo {
 			{
 				String key= (String) iter.next();
 				
-				Feature zona= copia.get(key);
+				Feature zona= tablaHashZonas.get(key);
 		
 				double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
 				
@@ -520,28 +533,137 @@ public class MVCModelo {
 					nodosMax=numeroNodos;
 					nombre= zona.getPropiedades().getScanombre();
 					keyMax=key;
+					zonaMax=zona;
 				}
 			}
 			
-			copia.delete(keyMax);
+			tablaHashZonas.delete(keyMax);
+			copia.put(keyMax, zonaMax);
 			
 			datos.put(nombre, nodosMax);
 			
 			n--;
 		}
 		
+		Queue q=(Queue) copia.keys();
+		Iterator iter=q.iterator();
+		
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next();
+			
+			Feature zona= copia.get(key);
+			
+			tablaHashZonas.put(key, zona);
+		}
+		
 		
 		return datos;
 	}
 	
-	public int[] req4C()
+	public double[] req4C()
 	{
-		//Retornarenmos un arreglo del tamaño de zonas existentes con la cantidadDeDatosFaltantes de cada zona en orden ascendente
-		int[] cantidadDeDatosFaltantes= new int [tablaHashZonas.size()];
+		//Retornarenmos un arreglo del tamaño de zonas existentes con el porcentajeDeDatosFaltantes de cada zona en orden ascendente
+		arregloHeapHoras= new TravelTime[heapMes.size()];
+		arregloHeapHoras=heapToArray();
 		
-		return cantidadDeDatosFaltantes;
+		double[] porcentajeDeDatosFaltantes= new double [1047];
+		int datosPorZona=50256;
+		
+		int i=1;
+		
+		while(i<=20)
+		{
+			int datosReales= cantidadDeViajesDeUnaZonaOrigen(i);
+			
+			int datosFaltantes= datosPorZona-datosReales;
+			double porcentaje= (100*datosFaltantes)/datosPorZona;
+			porcentajeDeDatosFaltantes[i-1]=porcentaje;
+			
+			i++;
+		}
+
+		return porcentajeDeDatosFaltantes;
 	}
 	
+	private int cantidadDeViajesDeUnaZonaOrigen(int idZona)
+	{
+		int contador=0;
+		
+		int i=0;
+		while(i<arregloHeapHoras.length)
+		{
+			TravelTime actual=arregloHeapHoras[i];
+			
+			if(actual.getSourceID()==idZona)
+			{
+				contador++;
+			}
+			i++;
+		}
+		
+		return contador;
+	}
+	private int cantidadDeZonasOrigen()
+	{
+
+		Queue<Integer> zonas= new Queue<Integer>();
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
+
+		while(!heapHoras.isEmpty())
+		{
+			TravelTime actual=(TravelTime) heapHoras.delMax();
+			copia.insert(actual);
+			int salida=actual.getSourceID();
+
+
+			if(numeroNoEnQueue(zonas,salida))
+			{
+				zonas.enqueue(salida);
+			}
+		}
+
+		heapHoras=copia;
+
+		return zonas.size();
+	}
+	
+	private boolean numeroNoEnQueue(Queue<Integer> q, int n)
+	{
+		Iterator<Integer> iter= q.iterator();
+		
+		while(iter.hasNext())
+		{
+			int actual= iter.next();
+			
+			if(actual==n)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	private TravelTime[] heapToArray()
+	{
+		TravelTime[] array= new TravelTime[heapHoras.size()];
+		
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
+
+		int i=0;
+		while(!heapHoras.isEmpty())
+		{
+			TravelTime actual=(TravelTime) heapHoras.delMax();
+			copia.insert(actual);
+
+			array[i]=actual;
+			i++;
+		}
+
+		heapHoras=copia;
+
+		return array;
+	}
 	
 	
 }

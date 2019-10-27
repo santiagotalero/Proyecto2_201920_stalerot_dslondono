@@ -199,11 +199,11 @@ public class Controller {
 					System.out.println("Ingrese una hora del dia: ");
 					int hora= lector.nextInt();
 					
-					heap= modelo.req1C(idZonaSalida, hora);
+					MaxHeapCP<TravelTime>heap8= modelo.req1C(idZonaSalida, hora);
 					
-					while(!heap.isEmpty())
+					while(!heap8.isEmpty())
 					{
-						TravelTime actual= heap.delMax();
+						TravelTime actual= heap8.delMax();
 
 						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", hora:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
 
@@ -214,26 +214,65 @@ public class Controller {
 					int idZonaLlegada= lector.nextInt();
 					
 					System.out.println("Ingrese la hora menor: ");
-					horaMenor= lector.nextInt();
+					int horaMenor9= lector.nextInt();
 					
 					System.out.println("Ingrese la hora mayor: ");
-					horaMayor= lector.nextInt();
+					int horaMayor9= lector.nextInt();
 					
-					heap= modelo.req2C(idZonaLlegada, horaMenor, horaMayor);
+					MaxHeapCP<TravelTime> heap9= modelo.req2C(idZonaLlegada, horaMenor9, horaMayor9);
 					
-					while(!heap.isEmpty())
+					while(!heap9.isEmpty())
 					{
-						TravelTime actual= heap.delMax();
+						TravelTime actual= heap9.delMax();
 
 						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", hora:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
 					}
 					
 					break;
 				case 10: 
-					//REQ3C
+					
+					System.out.println("Ingrese la cantidad de zonas: ");
+					int n10= lector.nextInt();
+					
+					HashTableLinearProbing<String,Integer> tabla10= modelo.req3C(n10);
+					
+					Queue q10=(Queue) tabla10.keys();
+					Iterator iter10=q10.iterator();
+					
+					while(iter10.hasNext())
+					{
+						String nombreZona= (String) iter10.next();
+						
+						int numeroNodos= tabla10.get(nombreZona);
+						
+						System.out.println("Zona: "+ nombreZona+", numero de nodos: "+ numeroNodos);
+					}
+					
 					break;
 				case 11: 
-					//REQ4C
+					
+					double[] porcentajes=modelo.req4C();
+					
+					System.out.println("Porcentaje de datos faltantes por zona");
+					
+					int i11=0;
+					
+					while(i11<porcentajes.length)
+					{
+						int zona=i11+1;
+						String linea=zona+"|";
+						double cantidadDeAsteriscos= porcentajes[i11]/2;
+						while(cantidadDeAsteriscos>0)
+						{
+							linea= linea+"*";
+							cantidadDeAsteriscos--;
+						}
+						System.out.println(linea);
+						i11++;
+					}
+					
+					
+					
 					break;
 
 				case 12: 
