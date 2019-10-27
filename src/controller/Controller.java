@@ -193,10 +193,41 @@ public class Controller {
 					//REQ3B
 					break;
 				case 8: 
-					//REQ1C
+					System.out.println("Ingrese una zona de salida: ");
+					int idZonaSalida= lector.nextInt();
+					
+					System.out.println("Ingrese una hora del dia: ");
+					int hora= lector.nextInt();
+					
+					heap= modelo.req1C(idZonaSalida, hora);
+					
+					while(!heap.isEmpty())
+					{
+						TravelTime actual= heap.delMax();
+
+						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", hora:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
+
+					}
 					break;
 				case 9: 
-					//REQ2C
+					System.out.println("Ingrese una zona de llegada: ");
+					int idZonaLlegada= lector.nextInt();
+					
+					System.out.println("Ingrese la hora menor: ");
+					horaMenor= lector.nextInt();
+					
+					System.out.println("Ingrese la hora mayor: ");
+					horaMayor= lector.nextInt();
+					
+					heap= modelo.req2C(idZonaLlegada, horaMenor, horaMayor);
+					
+					while(!heap.isEmpty())
+					{
+						TravelTime actual= heap.delMax();
+
+						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", hora:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
+					}
+					
 					break;
 				case 10: 
 					//REQ3C

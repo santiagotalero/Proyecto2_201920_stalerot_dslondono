@@ -244,7 +244,7 @@ public class MVCModelo {
 			
 			letras= letras+ nombre.substring(0, 1);
 		}
-		
+
 		
 		
 		HashTableLinearProbing<Character, Queue<String>> tabla= new HashTableLinearProbing<Character, Queue<String>>();
@@ -435,19 +435,103 @@ public class MVCModelo {
 	public MaxHeapCP req1C(int idZonaSalida, int hora )
 	{
 		//Retornaremos un heap con las viajes que cumplen las características dadas por parámetro
-		return null;
+		MaxHeapCP<TravelTime> copia= heapHoras;
+		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		
+		while(!copia.isEmpty())
+		{
+			TravelTime actual=(TravelTime) copia.delMax();
+			int salida=actual.getSourceID();
+			int h=actual.getIdentificador();
+			
+			if(salida==idZonaSalida && hora==h)
+			{
+				heap.insert(actual);
+			}
+		}
+		return heap;
 	}
 	
 	public MaxHeapCP req2C(int idZonaLlegada, int horaMenor, int horaMayor)
 	{
 		//Retornaremos una heap con los viajes que cumplan esa característica y se encuentren entre ese rango de zonas
-		return null;
+		MaxHeapCP<TravelTime> copia= heapHoras;
+		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		
+		while(!copia.isEmpty())
+		{
+			TravelTime actual=(TravelTime) copia.delMax();
+			int llegada=actual.getDstID();
+			int h=actual.getIdentificador();
+			
+			if(llegada==idZonaLlegada && h>horaMenor&&h<horaMayor)
+			{
+				heap.insert(actual);
+			}
+		}
+		return heap;
 	}
 	
 	public HashTableLinearProbing req3C(int n)
 	{
 		//Retornaremos una tabla de hash con las n zonas con mayor cantidad de nodos que definen su frontera
-		return null;
+		HashTableLinearProbing<String,Integer> datos= new HashTableLinearProbing<String,Integer>();
+		HashTableLinearProbing<String,Feature> copia= tablaHashZonas;
+		
+		while(n>0)
+		{
+			Queue q=(Queue) copia.keys();
+			Iterator iter=q.iterator();
+			
+			String nombre="No encontro";
+			int nodosMax=0;
+			String keyMax="";
+			
+			
+			while(iter.hasNext())
+			{
+				String key= (String) iter.next();
+				
+				Feature zona= copia.get(key);
+		
+				double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
+				
+				int numeroNodos=0;
+				
+				int i=0;
+				while(i<coordenadas.length)
+				{
+					int j=0;
+					while(j<coordenadas[i].length)
+					{
+						int z=0;
+						while(z<coordenadas[i][j].length)
+						{
+							numeroNodos ++;
+							z++;
+						}
+						j++;
+					}
+					i++;
+				}
+				
+				if(numeroNodos>nodosMax)
+				{
+					nodosMax=numeroNodos;
+					nombre= zona.getPropiedades().getScanombre();
+					keyMax=key;
+				}
+			}
+			
+			copia.delete(keyMax);
+			
+			datos.put(nombre, nodosMax);
+			
+			n--;
+		}
+		
+		
+		return datos;
 	}
 	
 	public int[] req4C()
