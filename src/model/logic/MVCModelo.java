@@ -417,114 +417,125 @@ public class MVCModelo {
 		
 	}
 	
-	/**
+		/**
 	 * Mostrar las N zonas que estan más al norte
 	 * @param N
 	 * @return una HTLP con las N zonas mas al norte
 	 */
-	public HashTableLinearProbing req1B( int N )
+	public HashTableLinearProbing req1B( int n )
 	{
-		HashTableLinearProbing retorno = new HashTableLinearProbing<>();
-
-		//Que una zona esté más al norte implica que su latitud es mayor
-		// Arreglo de coordenadas
-
-		Queue<Feature> zonas = new Queue<>(); //Queue de zonas
-
-		Queue que = (Queue) tablaHashZonas.keys();
-		Queue auxiliar = new Queue<>(); 
-
-		Iterator iter = que.iterator();
-		while ( iter.hasNext()) 
-		{
-			String actual = (String) iter.next(); //Key actual
-			Feature zona = (Feature)tablaHashZonas.get(actual); //Valor del Key, es decir la zona
-
-
-			double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
-
-			int i=0;
-			while(i<coordenadas.length)
-			{
-				int j=0;
-				while(j<coordenadas[i].length)
-				{
-					int z=0;
-					while(z<coordenadas[i][j].length)
-					{
-						int w=0;
-						while(w<coordenadas[i][j][z].length)
-						{
-							double[] coordenada= coordenadas[i][j][z];
-
-							double lat= coordenada[1];
-							double lon= coordenada[0];
-
-							Object[] nodo= new Object[3];
-							nodo[1]= lat;
-							nodo[2]=lon;
-
-							auxiliar.enqueue(lat); //Agregar todas las latitudes al queue auxiliar
-						}
-						w++;
-					}
-					z++;
-				}
-				j++;
-			}
-			i++;
-			
-			double[] vectorLatitudes; 
-			int m = 0; 
-			Iterator iter2 = auxiliar.iterator();  //Iterar sobre la queue de double para despues agregarlos a un vector y hacer bubble sort
-			while( iter2.hasNext()) 
-			{
-				double actual3 = (double) iter2.next(); 
-				vectorLatitudes[i] = actual3;
-				i++; 
-			}
-
-
-			bubbleSort(vectorLatitudes); //Organizar las latitudes descendentemente; 
-			
-			
-			//for(int i = 0; i < N; i++)
-			//{
-			//	Seleccionar las N latitudes y despues imprimir el nombre y las coordenadas de la zona mas al norte 
-			//}
-		}	
-
-		//Hasta aquí voy
+		HashTableLinearProbing<String, double[]> retorno = new HashTableLinearProbing<>();
+		HashTableLinearProbing<String, Feature> copia = tablaHashZonas;  
+		
+		//Variables finales
+		double latitudMax = 0.0;
+		String nombreZona = "";
+		String keyDeLatMax = "";
+		
+		String keyMax = "";
+		
+		
+		//Variables temporales
+		double latTemp = 0.0; 
+		String nomTemp = ""; 
+		double longTemp = 0.0;
+		String llaveTemp = "";
+		Feature zonaTemp; 
+		
+		double[] arrTempCoord = new double[2];
 
 		
+		
+		
+		
+		while(n>0)
+		{
+			Queue que = (Queue) copia.keys(); //Una copia de la queue de Keys
+			Iterator iter = que.iterator(); //Iterador de dicha copia
+			
+			while(iter.hasNext()) //Iterar sobre la copia de Keys
+			{
+				String keyActual= (String) iter.next(); //Key actual
+				
+				Feature zona = copia.get(keyActual);  //Valor de la Key actual, es decir la zona. 
+		
+				double [][][][] coordenadas= zona.getGeometrias().getCoordinates(); //Arreglo de coordenadas de la zona
+				
+				
+				
+				
+				int i=0;
+				while(i<coordenadas.length)
+				{
+					int j=0;
+					while(j<coordenadas[i].length)
+					{
+						int z=0;
+						while(z<coordenadas[i][j].length)
+						{
+							int w=0;
+							while(w<coordenadas[i][j][z].length)
+							{
+								double[] coordenada = coordenadas[i][j][z]; //Coordenadas en la posicion i, j & z 
+								
+								double lat = coordenada[1];
+								double lon = coordenada[0];
+								
+									Object[] nodo = new Object[3];
+									
+									String llave= zona.getPropiedades().getMOVEMENT_ID();
+									
+									nodo[0]= zona.getPropiedades().getScanombre();
+									nodo[1]= lat;
+									nodo[2]=lon;
+									
+									
+									
+									
+									//Asignar a las variables temporales AFUERA del ciclo
+									latTemp = (double) nodo[1];
+									nomTemp = (String)nodo[0];
+									longTemp = (double)nodo[2];
+									llave = llaveTemp;
+							
+								w++;
+							}
+							z++;
+						}
+						j++;
+					}
+					i++;
+				}
 
-
-		return retorno; 
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-	public void bubbleSort(double[] arr) 
-	{	 
-		int n = arr.length; 
-		for (int i = 0; i < n-1; i++) 
-			for (int j = 0; j < n-i-1; j++) 
-				if (arr[j] > arr[j+1]) 
-				{ 
-					// swap arr[j+1] and arr[i] 
-					double temp = arr[j]; 
-					arr[j] = arr[j+1]; 
-					arr[j+1] = temp; 
-				} 		
+					
+					if( latTemp > latitudMax ) //Si la latitud de la pos. i,j,z es mayor a la actual, se cambia la mayor
+					{
+						latTemp = latitudMax;
+						
+						nomTemp = nombreZona;
+						keyMax = llaveTemp; 
+						 
+						arrTempCoord[0] = latTemp; 
+						arrTempCoord[1] = longTemp; 
+						
+					}
+					
+			}
+			
+			copia.delete(keyMax);
+			
+			retorno.put(llaveTemp, arrTempCoord );
+			
+			n--;
+		}
+		
+		
+		
+		
+		
+		
+		
+		return retorno;
 	}
 
 
