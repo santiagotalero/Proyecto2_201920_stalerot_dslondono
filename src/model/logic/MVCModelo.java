@@ -577,7 +577,6 @@ public class MVCModelo {
 		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
 		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		System.out.println(heapHoras.size());
 		while(!heapHoras.isEmpty())
 		{
 			TravelTime actual=(TravelTime) heapHoras.delMax();
