@@ -546,8 +546,67 @@ public class MVCModelo {
 	
 	public RedBlackBST req2B(double latitud, double longitud)
 	{
-		//Retornaremos un arbol balanceado con los nodos que se encuentran entre las coordenadas dadas por parámetro
-		return null;
+
+		//Se deben mostrar todos los nodos que tengan esas mismas latitud y longitud truncando a 2 cifras decimales
+
+		RedBlackBST<String,Object[]> retorno= new RedBlackBST();
+
+		Queue que = (Queue) tablaHashZonas.keys(); //Se convierte en un queue las llaves
+		Iterator iter = que.iterator(); //Iterator para iterar sobre el queue de llaves
+
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next(); //Key actual
+
+			Feature zona = tablaHashZonas.get(key); //Zona actual 
+
+			double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
+
+			int i=0;
+			while(i < coordenadas.length)
+			{
+				int j=0;
+				while(j < coordenadas[i].length)
+				{
+					int z = 0;
+					while(z < coordenadas[i][j].length)
+					{
+						int w = 0;
+						while(w < coordenadas[i][j][z].length)
+						{
+							double[] coordenada= coordenadas[i][j][z];
+
+							double lat = coordenada[1];
+							double lon = coordenada[0];
+
+							if( lat == latitud && lon == longitud) 
+							{
+								if(Math.floor(lat*100) == Math.floor(latitud*100) && Math.floor(lon*100) == Math.floor(longitud*100))
+								{
+									Object[] nodo= new Object[3];
+
+									nodo[0]=zona.getPropiedades().getScanombre();
+									nodo[1]= lat;
+									nodo[2]= lon;
+									String llave= zona.getPropiedades().getMOVEMENT_ID();
+
+									retorno.put(llave, nodo);
+								}
+
+							}
+
+
+							w++;
+						}
+						z++;
+					}
+					j++;
+				}
+				i++;
+			}	
+		}
+
+		return retorno;
 	}
 	
 	public MaxHeapCP req3B()
