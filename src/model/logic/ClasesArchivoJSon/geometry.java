@@ -6,8 +6,8 @@ import java.util.ArrayList;
 public class geometry 
 {
 	private String type;
-	private ArrayList coordinates;
-	public geometry(String type, ArrayList coordinates) {
+	private double[][][][] coordinates;
+	public geometry(String type, double [][][][] coordinates) {
 		super();
 		this.type = type;
 		this.coordinates = coordinates;
@@ -18,10 +18,10 @@ public class geometry
 	public void setType(String type) {
 		this.type = type;
 	}
-	public ArrayList getCoordinates() {
+	public double [][][][] getCoordinates() {
 		return coordinates;
 	}
-	public void setCoordinates(ArrayList coordinates) {
+	public void setCoordinates(double [][][][] coordinates) {
 		this.coordinates = coordinates;
 	}
 	

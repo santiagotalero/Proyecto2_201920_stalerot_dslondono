@@ -5,7 +5,6 @@ import java.util.Random;
 
 /**
  * Clase que representa m�ltiples m�todos de ordenamiento por Comparable. Usa Comparator.
- * @author Daniel del Castillo A.
  */
 public class SortComparator 
 {

@@ -26,10 +26,10 @@ public class MVCModelo {
 	/**
 	 * Atributos del modelo del mundo
 	 */
-	private HashTableLinearProbing tablaHashZonas;
-	private MaxHeapCP heapHoras;
-	private MaxHeapCP heapMes;
-	private RedBlackBST arbolNodosMV;
+	private HashTableLinearProbing<String,Feature> tablaHashZonas;
+	private MaxHeapCP<TravelTime> heapHoras;
+	private MaxHeapCP<TravelTime> heapMes;
+	private RedBlackBST<Integer,NodoMV> arbolNodosMV;
 	
 
 	
@@ -38,10 +38,10 @@ public class MVCModelo {
 	 */
 	public MVCModelo()
 	{
-		tablaHashZonas= new HashTableLinearProbing();
-		heapHoras= new MaxHeapCP();
-		heapMes= new MaxHeapCP();
-		arbolNodosMV= new RedBlackBST();
+		tablaHashZonas= new HashTableLinearProbing<String,Feature>();
+		heapHoras= new MaxHeapCP<TravelTime>();
+		heapMes= new MaxHeapCP<TravelTime>();
+		arbolNodosMV= new RedBlackBST<Integer,NodoMV>();
 	}
 	
 	
@@ -220,25 +220,198 @@ public class MVCModelo {
 		}
 		System.out.println("Número de zonas cargadas: " + tablaHashZonas.size());
 		
+		
+		System.out.println(tablaHashZonas.get("1").getGeometrias().getCoordinates()[0][0].length);
 	}
 	
 	
 	public HashTableLinearProbing req1A(int n)
 	{
 		//Retornaremos una tabla de hash con las zonas que empiezan por las N letras más frecuentes
-		return null;
+		
+		String letras="";
+		
+		Queue q=(Queue) tablaHashZonas.keys();
+		Iterator iter=q.iterator();
+		
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next();
+			
+			Feature zona= tablaHashZonas.get(key);
+			
+			String nombre= zona.getPropiedades().getScanombre();
+			
+			letras= letras+ nombre.substring(0, 1);
+		}
+		
+		
+		
+		HashTableLinearProbing<Character, Queue<String>> tabla= new HashTableLinearProbing<Character, Queue<String>>();
+		
+		while(n>0)
+		{
+			Object[] masFrecuente= letraMasAparece(letras);
+			
+			char letra= (char) masFrecuente[0];
+			int veces= (int)masFrecuente[1];
+
+			
+			Queue zonas= zonasEmpiezanPorLetra(letra);
+			
+			
+			tabla.put(letra, zonas);
+			
+			n--;
+			String reemplazo= ""+letra;
+			letras=letras.replace(reemplazo, "");
+		}
+		
+		
+		return tabla;
+	}
+	
+	public Queue zonasEmpiezanPorLetra(char c)
+	{
+		Queue zonas= new Queue();
+		
+		Queue q=(Queue) tablaHashZonas.keys();
+		Iterator iter=q.iterator();
+		
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next();
+			
+			Feature zona= tablaHashZonas.get(key);
+			
+			String nombre= zona.getPropiedades().getScanombre();
+			
+			char primeraLetra= nombre.charAt(0);
+
+			if(primeraLetra==c)
+			{
+				zonas.enqueue(nombre);
+			}
+		}
+		return zonas;
+	}
+	
+	public Object[] letraMasAparece (String texto)
+	{
+		Object [] arreglo= new Object[2];
+		
+		char[] textoArray = texto.toCharArray();
+		
+		char letraMas='@';
+		int veces=1;
+		
+		
+		int i=0;
+		while(i<textoArray.length)
+		{	
+			int vecesTemp=1;
+			char actual= textoArray[i];
+			int j=i+1;
+			while(j< textoArray.length)
+			{
+				char comparar=textoArray[j];
+				
+				if(actual==comparar)
+				{
+					vecesTemp++;
+				}
+				j++;
+			}
+			if(vecesTemp>veces)
+			{
+				veces=vecesTemp;
+				letraMas=actual;
+			}
+			i++;
+		}
+		arreglo[0]= letraMas;
+		arreglo[1]= veces;
+		
+		return arreglo;
 	}
 	
 	public RedBlackBST req2A(double latitud, double longitud)
 	{
 		//Retornaremos un arbol balanceado con los nodos que se encuentran entre las coordenadas dadas por parámetro
-		return null;
+		RedBlackBST<String,Object[]> arbol= new RedBlackBST();
+		
+		Queue q=(Queue) tablaHashZonas.keys();
+		Iterator iter=q.iterator();
+		
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next();
+			
+			Feature zona= tablaHashZonas.get(key);
+	
+			double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
+			
+			int i=0;
+			while(i<coordenadas.length)
+			{
+				int j=0;
+				while(j<coordenadas[i].length)
+				{
+					int z=0;
+					while(z<coordenadas[i][j].length)
+					{
+						int w=0;
+						while(w<coordenadas[i][j][z].length)
+						{
+							double[] coordenada= coordenadas[i][j][z];
+							
+							double lat= coordenada[1];
+							double lon= coordenada[0];
+							
+							if(Math.floor(lat*1000)==Math.floor(latitud*1000)&Math.floor(lon*1000)==Math.floor(longitud*1000))
+							{
+								Object[] nodo= new Object[3];
+								
+								nodo[0]=zona.getPropiedades().getScanombre();
+								nodo[1]= lat;
+								nodo[2]=lon;
+								String llave= zona.getPropiedades().getMOVEMENT_ID();
+
+								arbol.put(llave, nodo);
+							}
+							w++;
+						}
+						z++;
+					}
+					j++;
+				}
+				i++;
+			}	
+		}
+		
+		return arbol;
+	
 	}
 	
 	public MaxHeapCP req3A(double tiempoMenor, double tiempoMayor , int n)
 	{
 		//Retornaremos un heap con los N viajes, los cuales su meanTravelTime se encuentre entre el rango de tiempos dados
-		return null;
+		MaxHeapCP<TravelTime> copia= heapMes;
+		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		
+		while(!copia.isEmpty()&& (n)>0)
+		{
+			TravelTime actual=(TravelTime) copia.delMax();
+			double tiempo= actual.getMeanTravelTime();
+			
+			if(tiempo>tiempoMenor && tiempo<tiempoMayor)
+			{
+				heap.insert(actual);
+				n--;
+			}
+		}
+		return heap;
+		
 	}
 	
 	public HashTableLinearProbing req1B(int N)
