@@ -184,10 +184,55 @@ public class Controller {
 					
 					break;
 				case 5: 
-					//REQ1B
+					System.out.println("Ingrese la cantidad de zonas: ");
+					int n5= lector.nextInt();
+					
+					HashTableLinearProbing<String,double[]> tabla5= modelo.req1B(n5);
+					
+					Queue q5=(Queue) tabla5.keys();
+					Iterator iter5=q5.iterator();
+					
+					while(iter5.hasNext())
+					{
+						String nombreZona= (String) iter5.next();
+						
+						double[] coordenada= tabla5.get(nombreZona);
+						
+						double lat= coordenada[0];
+						
+						double lon =  coordenada[1];
+						
+						System.out.println("Zona: "+ nombreZona+", coordenada: "+ lat + ", "+ lon);
+					}
 					break;
 				case 6: 
-					//REQ2B
+					System.out.println("Ingrese la latitud del nodo:");
+					double latitud6= lector.nextDouble();
+					
+					System.out.println("Ingrese la longitud del nodo:");
+					double longitud6= lector.nextDouble();
+					
+					RedBlackBST<Integer, double[]> arbol6= modelo.req2B(latitud6, longitud6);
+					
+					System.out.println("");
+					System.out.println(arbol6.size()+" nodos encontrados.");
+					System.out.println("");
+					
+					Queue<Integer> q6=(Queue<Integer>) arbol6.keys();
+					Iterator<Integer> iter6=q6.iterator();
+					
+					while(iter6.hasNext())
+					{
+						int key= iter6.next();
+						
+						double[] datos= arbol6.get(key);
+						
+						double lat=datos[0];
+						double lon=datos[1];
+						
+						System.out.println("Id: "+key + " : "+ lat+" , "+ lon);
+					}
+					
 					break;
 				case 7: 
 					//REQ3B

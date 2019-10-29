@@ -422,46 +422,39 @@ public class MVCModelo {
 	 * @param N
 	 * @return una HTLP con las N zonas mas al norte
 	 */
-	public HashTableLinearProbing req1B( int n )
+	public HashTableLinearProbing<String,double[]> req1B( int n )
 	{
 		HashTableLinearProbing<String, double[]> retorno = new HashTableLinearProbing<>();
-		HashTableLinearProbing<String, Feature> copia = tablaHashZonas;  
-		
-		//Variables finales
-		double latitudMax = 0.0;
-		String nombreZona = "";
-		String keyDeLatMax = "";
-		
-		String keyMax = "";
-		
-		
-		//Variables temporales
-		double latTemp = 0.0; 
-		String nomTemp = ""; 
-		double longTemp = 0.0;
-		String llaveTemp = "";
-		Feature zonaTemp; 
-		
-		double[] arrTempCoord = new double[2];
+		HashTableLinearProbing<String,Feature> copia= new HashTableLinearProbing<String,Feature>();
 
-		
-		
-		
-		
 		while(n>0)
 		{
-			Queue que = (Queue) copia.keys(); //Una copia de la queue de Keys
+			Queue que = (Queue) tablaHashZonas.keys(); //Una copia de la queue de Keys
 			Iterator iter = que.iterator(); //Iterador de dicha copia
-			
+
+			double[] arrTempCoord = new double[2];
+
+			//Variables temporales
+			double latTemp = 0.0; 
+			String nomTemp = ""; 
+			double longTemp = 0.0;
+			String llaveTemp = "";
+			Feature zonaTemp=null;
+
+
 			while(iter.hasNext()) //Iterar sobre la copia de Keys
 			{
 				String keyActual= (String) iter.next(); //Key actual
-				
-				Feature zona = copia.get(keyActual);  //Valor de la Key actual, es decir la zona. 
-		
+
+				Feature zona = tablaHashZonas.get(keyActual);  //Valor de la Key actual, es decir la zona. 
+
 				double [][][][] coordenadas= zona.getGeometrias().getCoordinates(); //Arreglo de coordenadas de la zona
-				
-				
+
+				double latZona = 0.0; 
+				String nomZona = ""; 
+				double longZona = 0.0;
+				String llaveZona = "";
+				Feature zonaZona=null;
 				
 				
 				int i=0;
@@ -477,27 +470,19 @@ public class MVCModelo {
 							while(w<coordenadas[i][j][z].length)
 							{
 								double[] coordenada = coordenadas[i][j][z]; //Coordenadas en la posicion i, j & z 
-								
+
 								double lat = coordenada[1];
 								double lon = coordenada[0];
-								
-									Object[] nodo = new Object[3];
-									
-									String llave= zona.getPropiedades().getMOVEMENT_ID();
-									
-									nodo[0]= zona.getPropiedades().getScanombre();
-									nodo[1]= lat;
-									nodo[2]=lon;
-									
-									
-									
-									
-									//Asignar a las variables temporales AFUERA del ciclo
-									latTemp = (double) nodo[1];
-									nomTemp = (String)nodo[0];
-									longTemp = (double)nodo[2];
-									llave = llaveTemp;
-							
+
+								if(lat>latTemp)
+								{
+									latZona=lat;
+									nomZona=zona.getPropiedades().getScanombre();
+									longZona=lon;
+									llaveZona=keyActual;
+									zonaZona=zona;
+								}
+
 								w++;
 							}
 							z++;
@@ -506,35 +491,48 @@ public class MVCModelo {
 					}
 					i++;
 				}
-
-					
-					if( latTemp > latitudMax ) //Si la latitud de la pos. i,j,z es mayor a la actual, se cambia la mayor
-					{
-						latTemp = latitudMax;
-						
-						nomTemp = nombreZona;
-						keyMax = llaveTemp; 
-						 
-						arrTempCoord[0] = latTemp; 
-						arrTempCoord[1] = longTemp; 
-						
-					}
-					
+				
+				if(latZona>latTemp)
+				{
+					latTemp=latZona;
+					nomTemp=nomZona;
+					longTemp=longZona;
+					llaveTemp=llaveZona;
+					zonaTemp=zonaZona;
+				}
+				
 			}
-			
-			copia.delete(keyMax);
-			
-			retorno.put(llaveTemp, arrTempCoord );
-			
+
+
+
+			arrTempCoord[0] = latTemp; 
+			arrTempCoord[1] = longTemp; 
+
+			retorno.put(nomTemp, arrTempCoord );
+
+			tablaHashZonas.delete(llaveTemp);
+			copia.put(llaveTemp, zonaTemp );
+
+
 			n--;
 		}
+
+
+		Queue q=(Queue) copia.keys();
+		Iterator iter=q.iterator();
 		
-		
-		
-		
-		
-		
-		
+		while(iter.hasNext())
+		{
+			String key= (String) iter.next();
+			
+			Feature zona= copia.get(key);
+			
+			tablaHashZonas.put(key, zona);
+		}
+
+
+
+
 		return retorno;
 	}
 
@@ -544,66 +542,38 @@ public class MVCModelo {
 
 
 	
-	public RedBlackBST req2B(double latitud, double longitud)
+	public RedBlackBST<Integer,double[]> req2B(double latitud, double longitud)
 	{
 
 		//Se deben mostrar todos los nodos que tengan esas mismas latitud y longitud truncando a 2 cifras decimales
 
-		RedBlackBST<String,Object[]> retorno= new RedBlackBST();
+		RedBlackBST<Integer,double[]> retorno= new RedBlackBST<Integer,double[]>();
 
-		Queue que = (Queue) tablaHashZonas.keys(); //Se convierte en un queue las llaves
-		Iterator iter = que.iterator(); //Iterator para iterar sobre el queue de llaves
+		Queue<Integer> que = (Queue<Integer>) arbolNodosMV.keys(); //Se convierte en un queue las llaves
+		Iterator<Integer> iter = que.iterator(); //Iterator para iterar sobre el queue de llaves
 
 		while(iter.hasNext())
 		{
-			String key= (String) iter.next(); //Key actual
+			int key= iter.next(); //Key actual
 
-			Feature zona = tablaHashZonas.get(key); //Zona actual 
+			NodoMV nodo = arbolNodosMV.get(key); //Nodo actual 
 
-			double [][][][] coordenadas= zona.getGeometrias().getCoordinates();
+			double lat=nodo.getLatitud();
+			double lon=nodo.getLongitud();
 
-			int i=0;
-			while(i < coordenadas.length)
+			if(Math.floor(lat*100) == Math.floor(latitud*100) && Math.floor(lon*100) == Math.floor(longitud*100))
 			{
-				int j=0;
-				while(j < coordenadas[i].length)
-				{
-					int z = 0;
-					while(z < coordenadas[i][j].length)
-					{
-						int w = 0;
-						while(w < coordenadas[i][j][z].length)
-						{
-							double[] coordenada= coordenadas[i][j][z];
-
-							double lat = coordenada[1];
-							double lon = coordenada[0];
-
-							if( lat == latitud && lon == longitud) 
-							{
-								if(Math.floor(lat*100) == Math.floor(latitud*100) && Math.floor(lon*100) == Math.floor(longitud*100))
-								{
-									Object[] nodo= new Object[3];
-
-									nodo[0]=zona.getPropiedades().getScanombre();
-									nodo[1]= lat;
-									nodo[2]= lon;
-									String llave= zona.getPropiedades().getMOVEMENT_ID();
-
-									retorno.put(llave, nodo);
-								}
-
-							}
+				double[] n= new double[2];
 
 
-							w++;
-						}
-						z++;
-					}
-					j++;
-				}
-				i++;
-			}	
+				n[0]= lat;
+				n[1]= lon;
+
+
+				retorno.put(nodo.getId(), n);
+			}
+
+
 		}
 
 		return retorno;
@@ -667,7 +637,7 @@ public class MVCModelo {
 	{
 		//Retornaremos una tabla de hash con las n zonas con mayor cantidad de nodos que definen su frontera
 		HashTableLinearProbing<String,Integer> datos= new HashTableLinearProbing<String,Integer>();
-		HashTableLinearProbing<String,Feature> copia= new HashTableLinearProbing<String,Feature>();;
+		HashTableLinearProbing<String,Feature> copia= new HashTableLinearProbing<String,Feature>();
 		
 		while(n>0)
 		{
