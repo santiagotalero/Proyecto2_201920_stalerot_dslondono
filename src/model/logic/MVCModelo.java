@@ -221,8 +221,7 @@ public class MVCModelo {
 		}
 		System.out.println("Número de zonas cargadas: " + tablaHashZonas.size());
 		
-		
-		System.out.println(tablaHashZonas.get("1").getGeometrias().getCoordinates()[0][0].length);
+
 	}
 	
 	
@@ -400,13 +399,14 @@ public class MVCModelo {
 		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
 		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		while(!heapMes.isEmpty()&& (n)>0)
+		while(!heapMes.isEmpty())
 		{
 			TravelTime actual=(TravelTime) heapMes.delMax();
 			copia.insert(actual);
 			double tiempo= actual.getMeanTravelTime();
+			int trimestre=actual.getTrimestre();
 			
-			if(tiempo>tiempoMenor && tiempo<tiempoMayor)
+			if(n>0&&tiempo>tiempoMenor && tiempo<tiempoMayor && trimestre==1)
 			{
 				heap.insert(actual);
 				n--;
@@ -579,25 +579,29 @@ public class MVCModelo {
 		return retorno;
 	}
 	
-		public MaxHeapCP req3B(double limiteBajo, double limiteAlto, int N)
+	public MaxHeapCP req3B(double desvMenor, double desvMayor, int n)
 	{
-		//Se debe retornar los viajes cuya desviación estándar mensual este en ese rango.
+		//Retornaremos un heap con los N viajes, los cuales su desviación estándar se encuentre entre el rango de tiempos dados
+		MaxHeapCP<TravelTime> heap= new MaxHeapCP();
+		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 		
-		MaxHeapCP<TravelTime> copia= heapMes;	//Copia del heap
-		MaxHeapCP<TravelTime> retorno= new MaxHeapCP();
-
-		while(!copia.isEmpty()&& (N)>0) //Recorrer la copia
+		while(!heapMes.isEmpty())
 		{
-			TravelTime actual = (TravelTime) copia.delMax(); //Borrar el TravelTime actual para despues agregarlo al retorno
-			double desviacionEst = actual.getStandardDeviationTravelTime();
-
-			if( desviacionEst > limiteBajo && desviacionEst < limiteAlto ) //Rango de desviación estandar
+			TravelTime actual=(TravelTime) heapMes.delMax();
+			copia.insert(actual);
+			double desv=actual.getStandardDeviationTravelTime();
+			int trimestre=actual.getTrimestre();
+			
+			if(n>0&&trimestre==1 && desv<desvMayor && desv>desvMenor)
 			{
-				retorno.insert(actual); //Se inserta en el retorno con la condicion de que esté en el rango
-				N--;
+				heap.insert(actual);
+				n--;
 			}
 		}
-		return retorno;
+		
+		heapMes=copia;
+		
+		return heap;
 	}
 	
 	public MaxHeapCP req1C(int idZonaSalida, int hora )
@@ -728,8 +732,8 @@ public class MVCModelo {
 	public double[] req4C()
 	{
 		//Retornarenmos un arreglo del tamaño de zonas existentes con el porcentajeDeDatosFaltantes de cada zona en orden ascendente
-		arregloHeapHoras= new TravelTime[heapMes.size()];
-		arregloHeapHoras=heapToArray();
+		arregloHeapHoras= new TravelTime[heapHoras.size()];
+		arregloHeapHoras=heapToArray(heapHoras);
 		
 		double[] porcentajeDeDatosFaltantes= new double [1047];
 		int datosPorZona=50256;
@@ -808,23 +812,23 @@ public class MVCModelo {
 		return true;
 	}
 	
-	private TravelTime[] heapToArray()
+	public TravelTime[] heapToArray(MaxHeapCP heap)
 	{
-		TravelTime[] array= new TravelTime[heapHoras.size()];
+		TravelTime[] array= new TravelTime[heap.size()];
 		
 		MaxHeapCP<TravelTime> copia= new MaxHeapCP<TravelTime>();
 
 		int i=0;
-		while(!heapHoras.isEmpty())
+		while(!heap.isEmpty())
 		{
-			TravelTime actual=(TravelTime) heapHoras.delMax();
+			TravelTime actual=(TravelTime) heap.delMax();
 			copia.insert(actual);
 
 			array[i]=actual;
 			i++;
 		}
 
-		heapHoras=copia;
+		heap=copia;
 
 		return array;
 	}
