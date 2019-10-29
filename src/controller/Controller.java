@@ -166,22 +166,49 @@ public class Controller {
 					
 					System.out.println("Ingrese un tiempo mayor del rango:");
 					int horaMayor= lector.nextInt();
-					
+
 					System.out.println("Ingrese la cantidad de viajes: ");
-					n= lector.nextInt();
-					
-					MaxHeapCP<TravelTime> heap= modelo.req3A(horaMenor, horaMayor, n);
-					
-					while(!heap.isEmpty())
+					int n4= lector.nextInt();
+
+					MaxHeapCP<TravelTime> heap= modelo.req3A(horaMenor, horaMayor, n4);
+
+					TravelTime[] arreglo= modelo.heapToArray(heap);
+
+					int i4=0;
+					while(i4<arreglo.length)
 					{
-						TravelTime actual= heap.delMax();
-
-						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", mes:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
-
+						TravelTime actual= arreglo[i4];
+						
+						
+						int j4=i4+1;
+						
+						while(j4<arreglo.length)
+						{
+							TravelTime siguiente= arreglo[j4];
+							
+							if(actual.getSourceID()>siguiente.getSourceID())
+							{
+								arreglo[i4]=siguiente;
+								arreglo[j4]=actual;
+							}
+							
+							
+							j4++;
+						}
+						i4++;
 					}
 					
 					
-					
+
+					int z4=0;
+					while(z4<arreglo.length)
+					{
+						TravelTime actual= arreglo[z4];
+						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", mes:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
+						z4++;
+					}
+
+
 					break;
 				case 5: 
 					System.out.println("Ingrese la cantidad de zonas: ");
@@ -189,21 +216,44 @@ public class Controller {
 					
 					HashTableLinearProbing<String,double[]> tabla5= modelo.req1B(n5);
 					
-					Queue q5=(Queue) tabla5.keys();
-					Iterator iter5=q5.iterator();
 					
-					while(iter5.hasNext())
+
+					while(n5>0)
 					{
-						String nombreZona= (String) iter5.next();
+						Queue q5=(Queue) tabla5.keys();
+						Iterator iter5=q5.iterator();
 						
-						double[] coordenada= tabla5.get(nombreZona);
 						
-						double lat= coordenada[0];
+						String nombreZona="";
+						double lat=0;
+						double lon=0;
 						
-						double lon =  coordenada[1];
-						
+						while(iter5.hasNext())
+						{
+							String nombre= (String) iter5.next();
+							
+							double[] coordenada= tabla5.get(nombre);
+							
+							double la= coordenada[0];
+							
+							double lo =  coordenada[1];
+							
+							if(la>lat)
+							{
+								nombreZona=nombre;
+								lat=la;
+								lon=lo;
+							}
+							
+						}
+						tabla5.delete(nombreZona);
+						n5--;
 						System.out.println("Zona: "+ nombreZona+", coordenada: "+ lat + ", "+ lon);
+						
 					}
+					
+					
+
 					break;
 				case 6: 
 					System.out.println("Ingrese la latitud del nodo:");
@@ -235,7 +285,52 @@ public class Controller {
 					
 					break;
 				case 7: 
-					//REQ3B
+					System.out.println("Ingrese un tiempo de desviacion menor del rango: ");
+					int desvMenor= lector.nextInt();
+					
+					System.out.println("Ingrese un tiempo de desviacion mayor del rango:");
+					int desvMayor= lector.nextInt();
+					
+					System.out.println("Ingrese la cantidad de viajes: ");
+					int n7= lector.nextInt();
+					
+					MaxHeapCP<TravelTime> heap7= modelo.req3B(desvMenor, desvMayor, n7);
+					
+					TravelTime[] arreglo7= modelo.heapToArray(heap7);
+
+					int i7=0;
+					while(i7<arreglo7.length)
+					{
+						TravelTime actual= arreglo7[i7];
+						
+						
+						int j7=i7+1;
+						
+						while(j7<arreglo7.length)
+						{
+							TravelTime siguiente= arreglo7[j7];
+							
+							if(actual.getSourceID()>siguiente.getSourceID())
+							{
+								arreglo7[i7]=siguiente;
+								arreglo7[j7]=actual;
+							}
+							
+							
+							j7++;
+						}
+						i7++;
+					}
+					
+					
+
+					int z7=0;
+					while(z7<arreglo7.length)
+					{
+						TravelTime actual= arreglo7[z7];
+						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", mes:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
+						z7++;
+					}
 					break;
 				case 8: 
 					System.out.println("Ingrese una zona de salida: ");
