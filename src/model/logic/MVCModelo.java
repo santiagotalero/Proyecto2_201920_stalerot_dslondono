@@ -579,10 +579,25 @@ public class MVCModelo {
 		return retorno;
 	}
 	
-	public MaxHeapCP req3B()
+		public MaxHeapCP req3B(double limiteBajo, double limiteAlto, int N)
 	{
-		//Retornaremos un heap con los N viajes, los cuales su desviación estándar se encuentre entre el rango de tiempos dados
-		return null;
+		//Se debe retornar los viajes cuya desviación estándar mensual este en ese rango.
+		
+		MaxHeapCP<TravelTime> copia= heapMes;	//Copia del heap
+		MaxHeapCP<TravelTime> retorno= new MaxHeapCP();
+
+		while(!copia.isEmpty()&& (N)>0) //Recorrer la copia
+		{
+			TravelTime actual = (TravelTime) copia.delMax(); //Borrar el TravelTime actual para despues agregarlo al retorno
+			double desviacionEst = actual.getStandardDeviationTravelTime();
+
+			if( desviacionEst > limiteBajo && desviacionEst < limiteAlto ) //Rango de desviación estandar
+			{
+				retorno.insert(actual); //Se inserta en el retorno con la condicion de que esté en el rango
+				N--;
+			}
+		}
+		return retorno;
 	}
 	
 	public MaxHeapCP req1C(int idZonaSalida, int hora )
