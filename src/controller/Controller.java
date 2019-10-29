@@ -328,7 +328,7 @@ public class Controller {
 					while(z7<arreglo7.length)
 					{
 						TravelTime actual= arreglo7[z7];
-						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", mes:"+actual.getIdentificador()+", tiempo promedio: "+actual.getMeanTravelTime());
+						System.out.println("Zona origen: "+ actual.getSourceID()+", zona destino: "+actual.getDstID()+", mes:"+actual.getIdentificador()+", tiempo promedio: "+actual.getStandardDeviationTravelTime());
 						z7++;
 					}
 					break;
